@@ -31,6 +31,12 @@ class Project(Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        table = "projects"
+
+    class Config:
+        orm_mode = True
+
 class User(Model):
     id = fields.IntField(pk=True)
     username = fields.CharField(max_length=100, unique=True)
@@ -39,6 +45,12 @@ class User(Model):
     role = fields.CharEnumField(UserRole, default=UserRole.USER)
     projects = fields.ManyToManyField("models.Project", related_name="users")
 
+    class Meta:
+        table = "users"
+
+    class Config:
+        orm_mode = True
+    
     def __str__(self):
         return self.username
 

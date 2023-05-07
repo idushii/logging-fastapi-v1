@@ -1,5 +1,3 @@
-from tortoise.contrib.fastapi import register_tortoise
-
 TORTOISE_ORM = {
     "connections": {"default": "postgres://postgres@localhost:5432/logging_fastapi"},
     "apps": {
@@ -9,11 +7,3 @@ TORTOISE_ORM = {
         }
     },
 }
-
-register_tortoise(
-    app,
-    db_url="postgres://postgres@localhost:5432/logging_fastapi",
-    modules={"models": ["main"]},
-    generate_schemas=True,
-    add_exception_handlers=True,
-)
