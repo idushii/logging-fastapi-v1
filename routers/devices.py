@@ -1,7 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from typing import List
 from pydantic import BaseModel
-from models import Device as DeviceBase
+from auth import get_current_user
+from models import Device as DeviceBase, User
 from tortoise.contrib.pydantic import pydantic_model_creator
 
 router = APIRouter(tags=["Deveices"])
@@ -16,27 +17,27 @@ class DeviceUpdate(BaseModel):
 Device = pydantic_model_creator(DeviceBase)
 
 @router.get("/devices/", response_model=List[Device])
-async def list_devices():
-    devices = await Device.all()
+async def list_devices(current_user: User = Depends(get_current_user)):
+    devices = await DeviceBase.all()
     return devices
 
 @router.get("/devices/{device_id}", response_model=Device)
-async def get_device(device_id: int):
-    device = await Device.get(id=device_id)
+async def get_device(device_id: int, current_user: User = Depends(get_current_user)):
+    device = await DeviceBase.get(id=device_id)
     return device
 
 @router.post("/devices/", response_model=Device)
-async def create_device(device: DeviceCreate):
-    new_device = await Device.create(**device.dict())
+async def create_device(device: DeviceCreate, current_user: User = Depends(get_current_user)):
+    new_device = await DeviceBase.create(**device.dict())
     return new_device
 
 @router.put("/devices/{device_id}", response_model=Device)
-async def update_device(device_id: int, device: DeviceUpdate):
-    updated_device = await Device.filter(id=device_id).update(**device.dict())
+async def update_device(device_id: int, device: DeviceUpdate, current_user: User = Depends(get_current_user)):
+    updated_device = await DeviceBase.filter(id=device_id).update(**device.dict())
     return updated_device
 
 @router.delete("/devices/{device_id}", response_model=Device)
-async def delete_device(device_id: int):
-    device = await Device.get(id=device_id)
-    await device.delete()
+async def delete_device(device_id: int, current_user: User = Depends(get_current_user)):
+    device = await DeviceBase.get(id=device_id)
+    await DeviceBase.delete()
     return device

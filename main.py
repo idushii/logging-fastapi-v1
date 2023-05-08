@@ -1,7 +1,9 @@
+import asyncio
 from fastapi import FastAPI
 from tortoise.contrib.fastapi import register_tortoise, HTTPNotFoundError
 from models import *
 from routers import projects, users, auth_tokens, devices, events
+from seeds import create_superuser
 from tortoise_config import TORTOISE_ORM
 
 app = FastAPI()
@@ -13,6 +15,11 @@ register_tortoise(
     generate_schemas=True,
     add_exception_handlers=True,
 )
+
+@app.on_event("startup")
+async def startup_event():
+    await create_superuser()
+
 
 app.include_router(users.router, prefix="/api/users")
 app.include_router(projects.router, prefix="/api/projects")
