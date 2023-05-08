@@ -56,12 +56,12 @@ class User(Model):
 
 class Device(Model):
     id = fields.IntField(pk=True)
-    description = fields.CharField(max_length=255)
+    uid = fields.CharField(max_length=255, unique=True)
     project = fields.ForeignKeyField("models.Project", related_name="devices")
+    events = fields.ReverseRelation["Event"]
 
     def __str__(self):
-        return self.description
-
+        return f"Device {self.id}"
 
 class Event(Model):
     id = fields.IntField(pk=True)

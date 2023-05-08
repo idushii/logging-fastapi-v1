@@ -1,12 +1,13 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
-from passlib.context import CryptContext
 from typing import Optional
 from datetime import datetime, timedelta
 
 from pydantic import BaseModel
 from models import User, UserRole
+
+from passlib.context import CryptContext
+from jose import JWTError, jwt
 
 class TokenData(BaseModel):
     username: str
